@@ -1,3 +1,4 @@
+// g++ `wx-config --cxxflags` -o automata automata.cpp `wx-config --libs`; ./automata
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 #include <string>
@@ -130,7 +131,7 @@ void MainFrame::OnSimulateWord() {
 
         // Si no hay transición se rechaza
         if (table.find(table_input) == table.end()) {
-            cout << "palabra rechazada.\n";
+            cout << "Palabra rechazada, transicion (" << curr_state << ", " << c << ") no existe.\n" ;
             printTape(word, word_pos);
             return;
         }
@@ -139,17 +140,21 @@ void MainFrame::OnSimulateWord() {
 
         // intenta detectar un bucle infinito si se mueve a la derecha ya estando en B y no cambia el estado 
         if (c == 'B' && transition.direction == 'D' && transition.next_state == curr_state) {
-            cout << "palabra rechazada.\n";
+            cout << "Palabra rechazada.\n";
             printTape(word, word_pos);
             return;
         }
 
-        cout << "(" << curr_state << ", " << c << ")\n";
+        cout << "(" << curr_state << ", " << c << ")     word = " << word << "\n";
 
         // Si la transición nos lleva al estado final aceptamos
         if (transition.next_state == final_state) {
-            cout << "palabra aceptada.\n";
+            cout << "Palabra aceptada.\n";
             return;
+        }
+
+        if (word_pos == 0 && transition.direction == 'I' ) {
+            cout << "Transicion (" << curr_state << ", " << c << ") no es valida para una cinta semi-infinita.\n";
         }
         
         cout << "-> ";
